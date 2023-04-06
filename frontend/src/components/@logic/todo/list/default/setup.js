@@ -1,40 +1,28 @@
-<template>
-  <div id="app">
-    <!--startTest
-    <div class="">
-      <input placeholder="name" v-model="name" type="text">
-      <input placeholder="surname" v-model="surname" type="text">
-    </div>
-
-    <button style="margin-bottom: 20px;" @click="startSocket">
-      enter
-    </button>
-    <div v-for="(item, index) in messages" :key="index" class="">
-      <div class="">
-        <input v-model="messages[index].name" type="text">
-        <input v-model="messages[index].surname" type="text">
-      </div>
-      <button @click="removeUser(item._id)" class="">delete</button>
-      <button @click="updateUser(item._id, item)" class="">update</button>
-    </div>-->
-    <router-view/>
-  </div>
-</template>
-
-<script>
 import { ref } from 'vue'
+//import { useStore } from '@/store';
+import ToDo from '@/compositions/Todo'
 export default {
-  name: 'App',
+  name: 'Todo-List',
   components: {
   },
+  props: {
+  },
   setup () {
+    const todo = new ToDo("ws://192.168.0.102:3000")
+    todo.connect()
+    todo.onMessage()
     const name = ref('')
     const surname = ref('')
     const test = ref('tested')
     const startSocket = () => {
-      sendMessage({
+      todo.sendMessage({
         name: name.value,
-        surname: surname.value})
+        surname: surname.value
+      })
+      //sendMessage({
+      //  name: name.value,
+      //  surname: surname.value
+      //})
     }
     const messages = ref([])
     let wsConnection = null
@@ -128,17 +116,4 @@ export default {
       updateUser
     }
   }
-}
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  font-size: 21px;
-}
-</style>
+};
